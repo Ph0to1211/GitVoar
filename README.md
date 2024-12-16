@@ -1,6 +1,6 @@
 # GitVoar
 
-GitVoar 是使用Flutter开发的第三方github，旨在新手学习与探索移动开发，还在不断开发中，欢迎star。
+GitVoar 是使用Flutter开发的第三方github，旨在新手学习与探索移动开发，还在不断开发中，欢迎star。<br>
 GitVoar is a third-party GitHub project developed with Flutter, aimed at helping beginners learn and explore mobile development. It is still under active development, and stars are welcome.
 
 ## 截图 Screenshot
