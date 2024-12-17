@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_github/http/git.dart';
 import 'package:my_github/pages/detail/repo_detail.dart';
 
 import '../../models/repo.dart';
@@ -18,11 +19,12 @@ class _RepoItemState extends State<RepoItem> {
     var subtitle;
     return Material(
       child: InkWell(
-        onTap: () {
+        onTap: () async {
+          Repo repo = await Git(context).addOwner(widget.repo);
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => RepoDetailPage(repo: widget.repo)
+                  builder: (context) => RepoDetailPage(repo: repo)
               )
           );
         },

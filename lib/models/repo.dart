@@ -67,36 +67,6 @@ class Repo {
     this.parent,
   });
 
-  // factory Repo.fromJson(Map<String, dynamic> json) => Repo(
-  //   id: json["id"],
-  //   name: json["name"],
-  //   fullName: json["full_name"],
-  //   private: json["private"],
-  //   owner: User.fromJson(json["owner"]),
-  //   htmlUrl: json["html_url"],
-  //   description: json["description"],
-  //   fork: json["fork"],
-  //   url: json["url"],
-  //   createdAt: DateTime.parse(json["created_at"]),
-  //   updatedAt: DateTime.parse(json["updated_at"]),
-  //   pushedAt: DateTime.parse(json["pushed_at"]),
-  //   size: json["size"],
-  //   stargazersCount: json["stargazers_count"],
-  //   watchersCount: json["watchers_count"],
-  //   language: json["language"],
-  //   forksCount: json["forks_count"],
-  //   openIssuesCount: json["open_issues_count"],
-  //   license: json["license"],
-  //   allowForking: json["allow_forking"],
-  //   visibility: json["visibility"],
-  //   forks: json["forks"],
-  //   openIssues: json["open_issues"],
-  //   watchers: json["watchers"],
-  //   defaultBranch: json["default_branch"],
-  //   networkCount: json["network_count"],
-  //   subscribersCount: json["subscribers_count"],
-  // );
-
   factory Repo.fromJson(Map<String, dynamic> json) => Repo(
     id: json["id"],
     name: json["name"],
