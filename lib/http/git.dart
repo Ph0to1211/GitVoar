@@ -111,8 +111,7 @@ class Git {
       queryParameters: queryParameters,
       options: _options,
     );
-    var repos = await addOwner(response.data!);
-    return repos.map((e) => Repo.fromJson(e)).toList();
+    return response.data!.map((e) => Repo.fromJson(e)).toList();
   }
 
 
@@ -128,8 +127,7 @@ class Git {
       queryParameters: queryParameters,
       options: _options,
     );
-    var repos = await addOwner(response.data!);
-    return repos.map((e) => Repo.fromJson(e)).toList();
+    return response.data!.map((e) => Repo.fromJson(e)).toList();
   }
 
   Future<List<Repo>> getRepos({
@@ -146,26 +144,31 @@ class Git {
       options: _options,
     );
     // return response.data!.map((e) => Repo.fromJson(e)).toList();
-    var repos = await addOwner(response.data!);
-    return repos.map((e) => Repo.fromJson(e)).toList();
+    List<Repo> repos = (response.data as List)
+        .map((e) => Repo.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return repos;
   }
 
   Future<List<Repo>> getStarred({
     required String userName,
     Map<String, dynamic>? queryParameters,
-    refresh = false
+    bool refresh = false,
   }) async {
     if (refresh) {
       _options.extra!.addAll({'refresh': true, 'list': true});
     }
+
     var response = await dio.get(
       'users/$userName/starred',
       queryParameters: queryParameters,
       options: _options,
     );
-    // var repos = await addParent(response.data!);
-    var repos = await addOwner(response.data!);
-    return repos.map((e) => Repo.fromJson(e)).toList();
+
+    List<Repo> repos = (response.data as List)
+        .map((e) => Repo.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return repos;
   }
 
   Future<List<Repo>> getForks({
@@ -181,8 +184,10 @@ class Git {
       queryParameters: queryParameters,
       options: _options,
     );
-    var repos = await addOwner(response.data!);
-    return repos.map((e) => Repo.fromJson(e)).toList();
+    List<Repo> repos = (response.data as List)
+        .map((e) => Repo.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return repos;
   }
 
   Future<List<Repo>> getHot({
@@ -201,9 +206,10 @@ class Git {
       queryParameters: queryParameters,
       options: _options,
     );
-    // return response.data['items'].map<Repo>((e) => Repo.fromJson(e)).toList();
-    var repos = await addOwner(response.data['items']);
-    return repos.map((e) => Repo.fromJson(e)).toList();
+    List<Repo> repos = (response.data['items'] as List)
+        .map((e) => Repo.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return repos;
   }
 
   Future<String> getREADME(repoName) async {
@@ -228,7 +234,11 @@ class Git {
           'noCache': true
         })
     );
-    return (response.data!['items'] as List<dynamic>).map((e) => Repo.fromJson(e)).toList();
+    // return (response.data!['items'] as List<dynamic>).map((e) => Repo.fromJson(e)).toList();
+    List<Repo> repos = (response.data!['items'] as List)
+        .map((e) => Repo.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return repos;
   }
 
   Future<List<User>> searchUser({
@@ -342,16 +352,26 @@ class Git {
     return users;
   }
 
-  Future<List> addOwner(List repos) async {
-    for (int i=0; i<repos.length; i++) {
-      Map repo = repos[i];
-      User owner = await getUser(repo['owner']['login']);
-      repo['owner'] = owner.toJson();
-      if (repo['fork']) {
-        repo['parent'] = await getParent(repo['full_name']);
-      }
+  // Future<List> addOwner(List repos) async {
+  //   for (int i=0; i<repos.length; i++) {
+  //     Map repo = repos[i];
+  //     User owner = await getUser(repo['owner']['login']);
+  //     repo['owner'] = owner.toJson();
+  //     if (repo['fork']) {
+  //       repo['parent'] = await getParent(repo['full_name']);
+  //     }
+  //   }
+  //   return repos;
+  // }
+
+  Future<Repo> addOwner(Repo repo) async {
+    Map<String, dynamic> repoJson = Map<String, dynamic>.from(repo.toJson());
+    User owner = await getUser(repoJson['owner']['login']);
+    repoJson['owner'] = owner.toJson();
+    if (repoJson['fork']) {
+      repoJson['parent'] = await getParent(repoJson['full_name']);
     }
-    return repos;
+    return Repo.fromJson(repoJson);
   }
 
 }
