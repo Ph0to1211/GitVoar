@@ -143,11 +143,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.location_on_rounded, color: Colors.grey,),
-              SizedBox(width: 5.0),
+              const Icon(Icons.location_on_rounded, color: Colors.grey, size: 20.0),
+              const SizedBox(width: 5.0),
               Text(
                 widget.user.location!,
-                style: TextStyle(fontSize: 14.0),
+                style: const TextStyle(fontSize: 14.0),
               )
             ],
           ));
@@ -156,11 +156,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.email_rounded, color: Colors.grey,),
-              SizedBox(width: 5.0),
+              const Icon(Icons.email_rounded, color: Colors.grey, size: 20.0),
+              const SizedBox(width: 5.0),
               Text(
                 widget.user.email!,
-                style: TextStyle(fontSize: 14.0),
+                style: const TextStyle(fontSize: 14.0),
               )
             ],
           ));
@@ -169,11 +169,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.link_rounded, color: Colors.grey,),
-              SizedBox(width: 5.0),
+              const Icon(Icons.link_rounded, color: Colors.grey, size: 20.0),
+              const SizedBox(width: 5.0),
               Text(
                 widget.user.blog!,
-                style: TextStyle(fontSize: 14.0),
+                style: const TextStyle(fontSize: 14.0),
               )
             ],
           ));
