@@ -19,9 +19,7 @@ class StargazersPage extends StatelessWidget {
         refresh: refresh,
       ),
       itemBuilder: (user) => UserItem(user),
-      actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.filter_alt_outlined))
-      ],
+      actions: const [],
     );
   }
 }
