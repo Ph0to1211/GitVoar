@@ -17,9 +17,7 @@ class HotReposPage extends StatelessWidget {
         refresh: refresh,
       ),
       itemBuilder: (repo) => RepoItem(repo),
-      actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.filter_alt_outlined))
-      ],
+      actions: const [],
       maxPage: 2,
     );
   }
