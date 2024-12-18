@@ -34,6 +34,11 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _initialize();
+    if (Global.profile.lastLogin != null) {
+      setState(() {
+        _nameAutoFocus = false;
+      });
+    }
   }
 
   void _initialize() async {
@@ -52,12 +57,6 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _isChecked = (matchingUser.rememberPwd == 1) ? true : false;
         });
-
-        if (_usernameCont.text.isNotEmpty) {
-          setState(() {
-            _nameAutoFocus = false;
-          });
-        }
       }
     }
   }
@@ -124,8 +123,8 @@ class _LoginPageState extends State<LoginPage> {
               // ),
               Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
               TextFormField(
-                autofocus: _nameAutoFocus,
                 controller: _usernameCont,
+                autofocus: _nameAutoFocus,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "用户名",
