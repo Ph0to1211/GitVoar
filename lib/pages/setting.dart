@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_github/common/global.dart';
 import 'package:my_github/db/db_helper.dart';
 
 class SettingPage extends StatelessWidget {
@@ -20,6 +21,7 @@ class SettingPage extends StatelessWidget {
             title: Text('删除数据'),
             onTap: () async {
               await DBHelper.deleteAllUser();
+              Global.profile.lastLogin = null;
             },
           )
         ],
