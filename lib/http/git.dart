@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_github/common/global.dart';
 import 'package:my_github/models/repo.dart';
 import 'package:my_github/models/user.dart';
@@ -372,6 +373,59 @@ class Git {
       repoJson['parent'] = await getParent(repoJson['full_name']);
     }
     return Repo.fromJson(repoJson);
+  }
+
+  Future<bool> checkStarred(String repoName) async {
+    var response = await dio.get(
+        'user/starred/$repoName',
+        options: _options.copyWith(
+            extra: {
+              'noCache': true
+            })
+    );
+    if (response.statusCode == 204) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> addStar(String repoName) async {
+    var response = await dio.put(
+        'user/starred/$repoName',
+        options: _options.copyWith(
+            extra: {
+              'noCache': true
+            })
+    );
+    if (response.statusCode == 204) {
+      Fluttertoast.showToast(
+        msg: "标星成功~",
+        gravity: ToastGravity.BOTTOM,
+      );
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> delStar(String repoName) async {
+    var response = await dio.delete(
+        'user/starred/$repoName',
+        options: _options.copyWith(
+            extra: {
+              'noCache': true
+            })
+    );
+    if (response.statusCode == 204) {
+      Fluttertoast.showToast(
+        msg: "取消成功",
+        gravity: ToastGravity.BOTTOM,
+      );
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }
