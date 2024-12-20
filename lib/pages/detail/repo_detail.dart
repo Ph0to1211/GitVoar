@@ -17,15 +17,20 @@ class RepoDetailPage extends StatefulWidget {
 }
 
 class _RepoDetailPageState extends State<RepoDetailPage> {
-  String mdBase64 = '';
-  final ValueNotifier<bool> starred = ValueNotifier(true);
+  // final ValueNotifier<bool> _starred = ValueNotifier(false);
+  late Future<bool> _starred;
   final ScrollController _controller = ScrollController();
+
   bool showToTopBtn = false;
   bool showTitle = false;
+
+  String mdBase64 = '';
 
   @override
   void initState() {
     super.initState();
+    _starred = Git(context).checkStarred(widget.repo.fullName!);
+    // _initializeStarStatus();
     _getMD();
 
     // 添加滚动监听
@@ -58,6 +63,11 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
     super.dispose();
   }
 
+  // Future<void> _initializeStarStatus() async {
+  //   bool isStarred = await Git(context).checkStarred(widget.repo.fullName!);
+  //   _starred.value = isStarred;
+  // }
+
   Future<void> _getMD() async {
     try {
       mdBase64 = await Git(context).getREADME(widget.repo.fullName);
@@ -79,11 +89,9 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
   @override
   Widget build(BuildContext context) {
     String decodedData = _decodeBase64(mdBase64);
-    // var starCount = widget.repo.stargazersCount!.toString();
     String starCount = formatNumberToK(widget.repo.stargazersCount!);
     var forkCount = widget.repo.forksCount!.toString();
     var issueCount = widget.repo.openIssuesCount!.toString();
-    var subscribersCount = widget.repo.subscribersCount.toString();
 
     return Scaffold(
       appBar: AppBar(
@@ -92,18 +100,67 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
           icon: const Icon(Icons.arrow_back_rounded),
         ),
         actions: [
-          ValueListenableBuilder<bool>(
-            valueListenable: starred,
-            builder: (context, value, _) {
+          FutureBuilder<bool>(
+            future: _starred,
+            builder: (context, snapshot) {
+              bool isStarred;
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: SizedBox(
+                    width: 20.0,
+                    height: 20.0,
+                    child: CircularProgressIndicator(strokeWidth: 2.0),
+                  ),
+                );
+              } else if (snapshot.hasData && snapshot.data != null) {
+                isStarred = true;
+              } else {
+                isStarred = false;
+              }
               return IconButton(
-                onPressed: () => starred.value = !starred.value,
+                onPressed: () async {
+                  bool result;
+                  if (isStarred) {
+                    result = await Git(context).delStar(widget.repo.fullName!);
+                  } else {
+                    result = await Git(context).addStar(widget.repo.fullName!);
+                  }
+                  if (result) {
+                    setState(() {
+                      _starred = Git(context).checkStarred(widget.repo.fullName!);
+                    });
+                  }
+                },
                 icon: Icon(
-                  value ? Icons.star_rounded : Icons.star_outline_rounded,
-                  color: value ? Colors.yellow : Colors.black,
+                  isStarred ? Icons.star_rounded : Icons.star_outline_rounded,
+                  color: isStarred ? Colors.yellow : Colors.black,
                 ),
               );
             },
           ),
+          // ValueListenableBuilder<bool>(
+          //   valueListenable: _starred,
+          //   builder: (context, value, _) {
+          //     return IconButton(
+          //       onPressed: () async {
+          //         bool result;
+          //         if (value) {
+          //           result = await Git(context).delStar(widget.repo.fullName!);
+          //         } else {
+          //           result = await Git(context).addStar(widget.repo.fullName!);
+          //         }
+          //         if (result) {
+          //           _starred.value = !value;
+          //         }
+          //       },
+          //       icon: Icon(
+          //         value ? Icons.star_rounded : Icons.star_outline_rounded,
+          //         color: value ? Colors.yellow : Colors.black,
+          //       ),
+          //     );
+          //   },
+          // ),
           PopupMenuButton<String>(
             onSelected: (String value) {
               // 根据选中的菜单项执行操作
@@ -117,17 +174,17 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
             },
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem<String>(
+                const PopupMenuItem<String>(
                   value: 'Option 1',
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(Icons.share_rounded),
                       SizedBox(width: 10),
                       Text('分享'),
                     ],
                   ),
                 ),
-                PopupMenuItem<String>(
+                const PopupMenuItem<String>(
                   value: 'Option 2',
                   child: Row(
                     children: const [
@@ -274,10 +331,11 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
             ),
           ),
           const Divider(color: Colors.grey, height: .0, thickness: .0),
+          buildListTile(Icons.code_rounded, '代码', '', Colors.black38, () {}),
           buildListTile(
-              Icons.bug_report_rounded, '议题', issueCount, Colors.green),
-          buildListTile(Icons.new_releases_rounded, '发行版', '', Colors.grey),
-          buildListTile(Icons.people_rounded, '关注者', '', Colors.orange),
+              Icons.bug_report_rounded, '议题', issueCount, Colors.green, () {}),
+          buildListTile(Icons.new_releases_rounded, '发行版', '', Colors.grey, () {}),
+          buildListTile(Icons.people_rounded, '关注者', '', Colors.orange, () {}),
           const Divider(color: Colors.grey, height: .0, thickness: .0),
           const Padding(
             padding:
@@ -327,11 +385,11 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
   }
 
   Widget buildListTile(
-      IconData icon, String title, String trailing, Color iconColor) {
+      IconData icon, String title, String trailing, Color iconColor, VoidCallback onTap) {
     return ListTile(
       leading: Icon(icon, color: iconColor),
       title: Text(title),
-      onTap: () {},
+      onTap: onTap,
       trailing: Text(trailing,
           style: const TextStyle(fontSize: 14.0, color: Colors.grey)),
     );
