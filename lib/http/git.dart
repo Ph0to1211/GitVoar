@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_github/common/global.dart';
+import 'package:my_github/models/content.dart';
 import 'package:my_github/models/repo.dart';
 import 'package:my_github/models/user.dart';
 import 'package:provider/provider.dart';
@@ -426,6 +427,32 @@ class Git {
     } else {
       return false;
     }
+  }
+
+  Future<List<Content>> getContent({
+    required String repoName,
+    required String path,
+    required String branch
+  }) async {
+    var response = await dio.get(
+      'repos/$repoName/contents/$path?ref=$branch',
+      options: _options
+    );
+    List<Content> contents = (response.data as List)
+        .map((e) => Content.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    contents.sort((a, b) {
+      if (a.type == 'dir' && b.type != 'dir') {
+        return -1;
+      } else if (a.type != 'dir' && b.type == 'dir') {
+        return 1;
+      } else {
+        return a.name.compareTo(b.name);
+      }
+    });
+
+    return contents;
   }
 
 }

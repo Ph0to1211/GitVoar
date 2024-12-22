@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:my_github/http/git.dart';
+import 'package:my_github/pages/content.dart';
 import 'package:my_github/pages/repo/fork_repos.dart';
 import 'package:my_github/pages/user/stargazers.dart';
 import 'package:my_github/pages/detail/user_datail.dart';
@@ -331,7 +332,14 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
             ),
           ),
           const Divider(color: Colors.grey, height: .0, thickness: .0),
-          buildListTile(Icons.code_rounded, '代码', '', Colors.black38, () {}),
+          buildListTile(Icons.folder_rounded, '文件', '', Colors.orange, () {
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ContentPage(repoName: widget.repo.fullName!, branch: widget.repo.defaultBranch!)
+                )
+            );
+          }),
           buildListTile(
               Icons.bug_report_rounded, '议题', issueCount, Colors.green, () {}),
           buildListTile(Icons.new_releases_rounded, '发行版', '', Colors.grey, () {}),
