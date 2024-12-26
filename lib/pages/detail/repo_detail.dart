@@ -6,6 +6,8 @@ import 'package:my_github/pages/content.dart';
 import 'package:my_github/pages/repo/fork_repos.dart';
 import 'package:my_github/pages/user/stargazers.dart';
 import 'package:my_github/pages/detail/user_datail.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/repo.dart';
 
 class RepoDetailPage extends StatefulWidget {
@@ -140,36 +142,17 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
               );
             },
           ),
-          // ValueListenableBuilder<bool>(
-          //   valueListenable: _starred,
-          //   builder: (context, value, _) {
-          //     return IconButton(
-          //       onPressed: () async {
-          //         bool result;
-          //         if (value) {
-          //           result = await Git(context).delStar(widget.repo.fullName!);
-          //         } else {
-          //           result = await Git(context).addStar(widget.repo.fullName!);
-          //         }
-          //         if (result) {
-          //           _starred.value = !value;
-          //         }
-          //       },
-          //       icon: Icon(
-          //         value ? Icons.star_rounded : Icons.star_outline_rounded,
-          //         color: value ? Colors.yellow : Colors.black,
-          //       ),
-          //     );
-          //   },
-          // ),
           PopupMenuButton<String>(
-            onSelected: (String value) {
+            onSelected: (String value) async {
               // 根据选中的菜单项执行操作
               if (value == 'Option 1') {
-                // 处理选项1
                 print("分享");
+                Share.share(widget.repo.htmlUrl!);
               } else if (value == 'Option 2') {
-                // 处理选项2
+                await launchUrl(
+                  Uri.parse(widget.repo.htmlUrl!),
+                  mode: LaunchMode.externalApplication
+                );
                 print("浏览器打开");
               }
             },

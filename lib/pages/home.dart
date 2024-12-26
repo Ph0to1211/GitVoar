@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_github/common/global.dart';
 import 'package:my_github/pages/login/login.dart';
 import 'package:my_github/pages/notification.dart';
 import 'package:my_github/pages/personal.dart';
@@ -7,6 +8,8 @@ import 'package:my_github/pages/search.dart';
 import 'package:my_github/pages/work.dart';
 import 'package:my_github/pages/explore.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../common/status.dart';
 import 'repo/repos.dart';
@@ -96,9 +99,45 @@ class _HomeRouteState extends State<HomeRoute> {
             Navigator.pushNamed(context, "login");
           },
         ),
-        IconButton(
+        PopupMenuButton<String>(
+          onSelected: (String value) async {
+            // 根据选中的菜单项执行操作
+            if (value == 'Option 1') {
+              print("分享");
+              Share.share("https://github.com/${Global.profile.lastLogin}");
+            } else if (value == 'Option 2') {
+              await launchUrl(
+                  Uri.parse("https://github.com/${Global.profile.lastLogin}"),
+                  mode: LaunchMode.externalApplication
+              );
+              print("浏览器打开");
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return [
+              const PopupMenuItem<String>(
+                value: 'Option 1',
+                child: Row(
+                  children: [
+                    Icon(Icons.share_rounded),
+                    SizedBox(width: 10),
+                    Text('分享'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Option 2',
+                child: Row(
+                  children: const [
+                    Icon(Icons.open_in_browser_rounded),
+                    SizedBox(width: 10),
+                    Text('在浏览器打开'),
+                  ],
+                ),
+              ),
+            ];
+          },
           icon: const Icon(Icons.more_vert_rounded),
-          onPressed: () {},
         ),
       ];
     }
