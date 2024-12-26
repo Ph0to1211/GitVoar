@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:my_github/http/git.dart';
 import 'package:my_github/models/content.dart';
@@ -14,16 +16,18 @@ class ContentPage extends StatefulWidget {
 class _ContentPageState extends State<ContentPage> {
   final List<String> _navigation = [''];
   List<Content> _items = [];
+  String _fileContent = '';
 
   bool _isLoading = false;
+  bool _fileView = false;
 
   @override
   void initState() {
     super.initState();
-    replaceItems(_navigation.first);
+    _replaceItems(_navigation.first);
   }
 
-  void replaceItems(String path) async {
+  void _replaceItems(String path) async {
     setState(() {
       _isLoading = true;
     });
@@ -33,7 +37,7 @@ class _ContentPageState extends State<ContentPage> {
         branch: widget.branch
     );
     setState(() {
-      _items = data;
+      _items = data as List<Content>;
       _isLoading = false;
     });
   }
@@ -44,7 +48,7 @@ class _ContentPageState extends State<ContentPage> {
       appBar: AppBar(
         title: (_navigation.length > 1) ? _buildTitle(_navigation.last) : const Text('文件'),
         leading: IconButton(
-          onPressed: (_navigation.length > 1) ? _pop : () {Navigator.pop(context);},
+          onPressed: () {Navigator.pop(context);},
           icon: const Icon(Icons.arrow_back_rounded),
         ),
         actions: [
@@ -63,12 +67,16 @@ class _ContentPageState extends State<ContentPage> {
 
   Widget _buildContent() {
     if (!_isLoading) {
-      return ListView.builder(
-        itemCount: _items.length,
-        itemBuilder: (context, index) {
-          return _buildItem(_items[index]);
-        },
-      );
+      if (_fileView) {
+        return _buildFileView();
+      } else {
+        return ListView.builder(
+          itemCount: _items.length,
+          itemBuilder: (context, index) {
+            return _buildItem(_items[index]);
+          },
+        );
+      }
     } else {
       return const Center(
         child: CircularProgressIndicator()
@@ -76,6 +84,25 @@ class _ContentPageState extends State<ContentPage> {
     }
   }
 
+  Widget _buildFileView() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: .0),
+      child: Center(
+        child: SelectableText(_fileContent),
+      ),
+    );
+  }
+
+  Widget _buildTitle(String title) {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SelectableText(title),
+      ),
+    );
+  }
+  
   Widget _buildItem(Content content) {
     return ListTile(
       leading: (content.type == 'dir')
@@ -84,28 +111,26 @@ class _ContentPageState extends State<ContentPage> {
       title: Text(content.name),
       onTap: () {
         if (content.type == 'dir') {
-          replaceItems(content.path);
+          _replaceItems(content.path);
           setState(() {
             _navigation.add(content.path);
           });
+        } else if (content.type == 'file') {
+          _parseFileContent(content);
         }
       },
     );
   }
 
-  Widget _buildTitle(String title) {
-    return FittedBox(
-      fit: BoxFit.scaleDown,  // 自动缩小文字，直到适应空间
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,  // 超长时水平滚动
-        child: Text(title),
-      ),
-    );
-  }
-
   Future<bool> _pop() {
-    if (_navigation.length > 1) {
-      replaceItems(_navigation[_navigation.length-2]);
+    if (_fileView) {
+      setState(() {
+        _fileView = false;
+        _navigation.removeLast();
+      });
+      return Future.value(false);
+    } else if (_navigation.length > 1) {
+      _replaceItems(_navigation[_navigation.length-2]);
       setState(() {
         _navigation.removeLast();
       });
@@ -113,6 +138,27 @@ class _ContentPageState extends State<ContentPage> {
     } else {
       return Future.value(true);
     }
+  }
+
+  void _parseFileContent(Content content) async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response = await Git(context).getContent(
+      repoName: widget.repoName,
+      path: content.path,
+      branch: widget.branch
+    );
+    var contentEncoded = response as Content;
+    String str = contentEncoded.content!.replaceAll('\n', '');
+    List<int> bytes = base64.decode(str);
+    var contentDecoded = utf8.decode(bytes);
+    setState(() {
+      _navigation.add(content.path);
+      _fileContent = contentDecoded;
+      _fileView = true;
+      _isLoading = false;
+    });
   }
 
 }

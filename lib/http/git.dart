@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -429,7 +430,7 @@ class Git {
     }
   }
 
-  Future<List<Content>> getContent({
+  Future<Object> getContent({
     required String repoName,
     required String path,
     required String branch
@@ -438,21 +439,40 @@ class Git {
       'repos/$repoName/contents/$path?ref=$branch',
       options: _options
     );
-    List<Content> contents = (response.data as List)
-        .map((e) => Content.fromJson(e as Map<String, dynamic>))
-        .toList();
 
-    contents.sort((a, b) {
-      if (a.type == 'dir' && b.type != 'dir') {
-        return -1;
-      } else if (a.type != 'dir' && b.type == 'dir') {
-        return 1;
-      } else {
-        return a.name.compareTo(b.name);
-      }
-    });
+    if (response.data is List) {
+      List<Content> contents = (response.data as List)
+          .map((e) => Content.fromJson(e as Map<String, dynamic>))
+          .toList();
 
-    return contents;
+      contents.sort((a, b) {
+        if (a.type == 'dir' && b.type != 'dir') {
+          return -1;
+        } else if (a.type != 'dir' && b.type == 'dir') {
+          return 1;
+        } else {
+          return a.name.compareTo(b.name);
+        }
+      });
+      return contents;
+    } else {
+      return Content.fromJson(response.data as Map<String, dynamic>);
+    }
+
+  }
+
+  Future<List<String>> getBranches({
+    required String repoName,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    var response = await dio.get(
+      'repos/$repoName/branches',
+      queryParameters: queryParameters,
+      options: _options
+    );
+    var data = response.data as List;
+    List<String> branches = data.map((i) => i['name'] as String).toList();
+    return branches;
   }
 
 }

@@ -10,26 +10,30 @@ class Content {
   String path;
   String? download_url;
   String type;
+  String? content;
 
   Content({
     required this.name,
     required this.path,
     this.download_url,
-    required this.type
+    required this.type,
+    this.content
   });
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
     name: json['name'],
     path: json['path'],
     download_url: json['download_url'],
-    type: json['type']
+    type: json['type'],
+    content: json['content']
   );
 
   Map<String, dynamic> toJson() => {
     "name": name,
     "path": path,
     "download_url": download_url,
-    "type": type
+    "type": type,
+    "content": content
   };
 
 }
