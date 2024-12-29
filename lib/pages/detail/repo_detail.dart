@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:my_github/http/git.dart';
 import 'package:my_github/pages/content.dart';
+import 'package:my_github/pages/release.dart';
 import 'package:my_github/pages/repo/fork_repos.dart';
 import 'package:my_github/pages/user/stargazers.dart';
 import 'package:my_github/pages/detail/user_datail.dart';
@@ -325,7 +326,14 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
           }),
           buildListTile(
               Icons.bug_report_rounded, '议题', issueCount, Colors.green, () {}),
-          buildListTile(Icons.new_releases_rounded, '发行版', '', Colors.grey, () {}),
+          buildListTile(Icons.new_releases_rounded, '发行版', '', Colors.grey, () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ReleasePage(repoName: widget.repo.fullName!,)
+                )
+            );
+          }),
           buildListTile(Icons.people_rounded, '关注者', '', Colors.orange, () {}),
           const Divider(color: Colors.grey, height: .0, thickness: .0),
           const Padding(

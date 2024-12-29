@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_github/common/global.dart';
 import 'package:my_github/models/content.dart';
+import 'package:my_github/models/release.dart';
 import 'package:my_github/models/repo.dart';
 import 'package:my_github/models/user.dart';
 import 'package:provider/provider.dart';
@@ -473,6 +474,21 @@ class Git {
     var data = response.data as List;
     List<String> branches = data.map((i) => i['name'] as String).toList();
     return branches;
+  }
+
+  Future<List<Release>> getReleases({
+    required String repoName,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    var response = await dio.get(
+      'repos/$repoName/releases',
+      queryParameters: queryParameters,
+      options: _options
+    );
+    List<Release> releases = (response.data as List)
+        .map((e) => Release.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return releases;
   }
 
 }
