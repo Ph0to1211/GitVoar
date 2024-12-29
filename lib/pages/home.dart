@@ -22,19 +22,19 @@ class HomeRoute extends StatefulWidget {
 }
 
 class _HomeRouteState extends State<HomeRoute> {
-  int _selectIndex = 3;
+  int _selectIndex = 2;
 
   DateTime? _lastPressedAt;
 
   Widget getPage(int index) {
     switch (index) {
+      // case 0:
+      //   return WorkPage();
       case 0:
-        return WorkPage();
+        return ExplorePage();
       case 1:
         return NotificationPage();
       case 2:
-        return ExplorePage();
-      case 3:
         return PersonalPage();
       default:
         return const LoginPage();
@@ -43,13 +43,13 @@ class _HomeRouteState extends State<HomeRoute> {
 
   String getTitle(int index) {
     switch (index) {
-      case 0:
-        return "主页";
+      // case 0:
+      //   return "主页";
+     case 0:
+        return "探索";
      case 1:
         return "通知";
      case 2:
-        return "探索";
-     case 3:
         return "个人";
      default:
         return "登录";
@@ -65,23 +65,23 @@ class _HomeRouteState extends State<HomeRoute> {
   TextEditingController _searchCtr = TextEditingController();
 
   List<Widget> _buildActions() {
+    // if (_selectIndex == 0) {
+    //   return [
+    //     IconButton(
+    //       icon: const Icon(Icons.search_rounded),
+    //       onPressed: () {},
+    //     ),
+    //    IconButton(
+    //       icon: const Icon(Icons.add_circle_outline_rounded),
+    //       onPressed: () {},
+    //     ),
+    //    IconButton(
+    //       icon: const Icon(Icons.more_vert_rounded),
+    //       onPressed: () {},
+    //     ),
+    //   ];
+    // }
     if (_selectIndex == 0) {
-      return [
-        IconButton(
-          icon: const Icon(Icons.search_rounded),
-          onPressed: () {},
-        ),
-       IconButton(
-          icon: const Icon(Icons.add_circle_outline_rounded),
-          onPressed: () {},
-        ),
-       IconButton(
-          icon: const Icon(Icons.more_vert_rounded),
-          onPressed: () {},
-        ),
-      ];
-    }
-    if (_selectIndex == 2) {
       return [
         IconButton(
           icon: const Icon(Icons.search_rounded),
@@ -91,7 +91,7 @@ class _HomeRouteState extends State<HomeRoute> {
         ),
       ];
     }
-    if (_selectIndex == 3) {
+    if (_selectIndex == 2) {
       return [
         IconButton(
           icon: const Icon(Icons.compare_arrows_rounded),
@@ -182,20 +182,20 @@ class _HomeRouteState extends State<HomeRoute> {
           selectedIndex: _selectIndex,
           onDestinationSelected: _switchPage,
           destinations: [
+            // NavigationDestination(
+            //   icon: Icon(_selectIndex == 0 ? Icons.home_rounded : Icons.home_outlined),
+            //   label: "主页",
+            // ),
             NavigationDestination(
-              icon: Icon(_selectIndex == 0 ? Icons.home_rounded : Icons.home_outlined),
-              label: "主页",
+              icon: Icon(_selectIndex == 0 ? Icons.explore_rounded : Icons.explore_outlined),
+              label: "探索",
             ),
             NavigationDestination(
               icon: Icon(_selectIndex == 1 ? Icons.notifications_rounded : Icons.notifications_outlined),
               label: "通知",
             ),
             NavigationDestination(
-              icon: Icon(_selectIndex == 2 ? Icons.explore_rounded : Icons.explore_outlined),
-              label: "探索",
-            ),
-            NavigationDestination(
-              icon: Icon(_selectIndex == 3 ? Icons.account_circle_rounded : Icons.account_circle_outlined),
+              icon: Icon(_selectIndex == 2 ? Icons.account_circle_rounded : Icons.account_circle_outlined),
               label: "个人",
             )
           ],

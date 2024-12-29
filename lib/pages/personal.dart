@@ -12,7 +12,7 @@ import '../common/status.dart';
 import '../models/user.dart';
 
 class PersonalPage extends StatefulWidget {
-  PersonalPage({super.key});
+  const PersonalPage({super.key});
 
   @override
   _PersonalPageState createState() => _PersonalPageState();
@@ -27,7 +27,7 @@ class _PersonalPageState extends State<PersonalPage> {
     return ListView(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -80,8 +80,8 @@ class _PersonalPageState extends State<PersonalPage> {
                             color: _editIconBackgroundColor,
                             shape: BoxShape.circle
                         ),
-                        padding: EdgeInsets.all(4.0),
-                        child: Icon(
+                        padding: const EdgeInsets.all(4.0),
+                        child: const Icon(
                           Icons.logout_rounded,
                           size: 20.0,
                         ),
@@ -90,12 +90,12 @@ class _PersonalPageState extends State<PersonalPage> {
                   )
                 ],
               ),
-              SizedBox(width: 20.0),
+              const SizedBox(width: 20.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(user.login!, style: TextStyle(fontSize: 30.0)),
+                    Text(user.login!, style: const TextStyle(fontSize: 30.0)),
                     buildSubItem()
                   ],
                 ),
@@ -103,10 +103,13 @@ class _PersonalPageState extends State<PersonalPage> {
             ],
           ),
         ),
-        Divider(color: Colors.grey, height: .0, thickness: .0),
+        const Divider(color: Colors.grey, height: .0, thickness: .0),
+        const ListTile(
+          title: Text('我的工作', style: TextStyle(fontSize: 15))
+        ),
         ListTile(
-          leading: Icon(Icons.book_rounded, color: Colors.black),
-          title: Text('仓库'),
+          leading: const Icon(Icons.book_rounded, color: Colors.black),
+          title: const Text('仓库'),
           onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(
@@ -118,8 +121,8 @@ class _PersonalPageState extends State<PersonalPage> {
           trailing: Text('1', style: TextStyle(color: Colors.grey, fontSize: 14.0))
         ),
         ListTile(
-          leading: Icon(Icons.people_rounded, color: Colors.orange),
-          title: Text('组织'),
+          leading: const Icon(Icons.people_rounded, color: Colors.orange),
+          title: const Text('组织'),
           onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(
@@ -131,8 +134,8 @@ class _PersonalPageState extends State<PersonalPage> {
           // trailing: Text('1', style: TextStyle(color: Colors.grey, fontSize: 14.0))
         ),
         ListTile(
-          leading: Icon(Icons.star_rounded, color: Colors.yellow),
-          title: Text('已加星标'),
+          leading: const Icon(Icons.star_rounded, color: Colors.yellow),
+          title: const Text('已加星标'),
           onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(
@@ -142,20 +145,51 @@ class _PersonalPageState extends State<PersonalPage> {
             );
           },
         ),
-        Divider(color: Colors.grey, height: .0, thickness: .0),
+        const Divider(color: Colors.grey, height: .0, thickness: .0),
         ListTile(
-            leading: Icon(Icons.settings_rounded),
-            title: Text('设置'),
-            onTap: () {
-              Navigator.pushNamed(context, "Setting");
-            }
+          title: const Text('收藏夹', style: TextStyle(fontSize: 15)),
+          trailing: IconButton(
+            icon: Icon(Icons.more_horiz_rounded, color: Colors.grey[600]),
+            onPressed: () {},
+          ),
+        ),
+        Column(
+          children: [
+            const Text(
+              '您需要的内容，一步之遥',
+              style: TextStyle(
+                  fontSize: 16.0
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                '快速访问您的仓库',
+                style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey[600]
+                ),
+              ),
+            )
+          ],
+        ),
+        const Divider(color: Colors.grey, height: .0, thickness: .0),
+        const ListTile(
+            title: Text('其他', style: TextStyle(fontSize: 15))
         ),
         ListTile(
-            leading: Icon(Icons.info_outline_rounded),
-            title: Text('关于'),
-            onTap: () {
-              Navigator.pushNamed(context, "About");
-            }
+          leading: const Icon(Icons.settings_rounded),
+          title: const Text('设置'),
+          onTap: () {
+            Navigator.pushNamed(context, "Setting");
+          }
+        ),
+        ListTile(
+          leading: const Icon(Icons.info_outline_rounded),
+          title: const Text('关于'),
+          onTap: () {
+            Navigator.pushNamed(context, "About");
+          }
         ),
       ],
     );
