@@ -81,13 +81,13 @@ class _ReleaseDetailPageState extends State<ReleaseDetailPage> {
             onTap: () {},
           ),
           const Divider(color: Colors.grey, height: .0, thickness: .0),
-          const ListTile(
+        ];
+        if (widget.release.assets.isNotEmpty) {
+          items.add(const ListTile(
             title: Text('资源', style: TextStyle(fontSize: 15),
             ),
             onTap: null,
-          ),
-        ];
-        if (widget.release.assets.isNotEmpty) {
+          ));
           for (int i = 0; i < widget.release.assets.length; i++) {
             items.add(_buildAsset(widget.release.assets[i]));
           }
