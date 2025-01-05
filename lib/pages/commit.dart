@@ -14,7 +14,6 @@ class CommitPage extends StatefulWidget {
 
 class _CommitPageState extends State<CommitPage> {
   List<dynamic> _items = [];
-  static const loadingTag = '##loading##';
   bool _hasMore = true;
   bool _isLoading = false;
   int _page = 1;
