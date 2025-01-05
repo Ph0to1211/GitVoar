@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:my_github/http/git.dart';
+import 'package:my_github/pages/commit.dart';
 import 'package:my_github/pages/content.dart';
 import 'package:my_github/pages/release.dart';
 import 'package:my_github/pages/repo/fork_repos.dart';
@@ -321,6 +322,14 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
                 MaterialPageRoute(
                     builder: (context) =>
                         ContentPage(repoName: widget.repo.fullName!, branch: widget.repo.defaultBranch!)
+                )
+            );
+          }),
+          buildListTile(Icons.commit_rounded, '提交', '', Colors.grey, () {
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CommitPage(repoName: widget.repo.fullName!)
                 )
             );
           }),

@@ -13,6 +13,7 @@ import 'package:my_github/models/user.dart';
 import 'package:provider/provider.dart';
 
 import '../common/status.dart';
+import '../models/commit.dart';
 
 class Git {
   Git(this.context) {
@@ -489,6 +490,21 @@ class Git {
         .map((e) => Release.fromJson(e as Map<String, dynamic>))
         .toList();
     return releases;
+  }
+
+  Future<List<Commit>> getCommits({
+    required String repoName,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    var response = await dio.get(
+        'repos/$repoName/commits',
+        queryParameters: queryParameters,
+        options: _options
+    );
+    List<Commit> commits = (response.data as List)
+        .map((e) => Commit.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return commits;
   }
 
 }
