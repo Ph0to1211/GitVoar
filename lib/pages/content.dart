@@ -87,9 +87,7 @@ class _ContentPageState extends State<ContentPage> {
   Widget _buildFileView() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: .0),
-      child: Center(
-        child: SelectableText(_fileContent),
-      ),
+      child: SelectableText(_fileContent),
     );
   }
 

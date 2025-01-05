@@ -118,10 +118,7 @@ class _CommitPageState extends State<CommitPage> {
                 onPressed: () {},
                 child: Text(items[i].author.login!),
               ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 5.0),
-                child: Text('提交'),
-              ),
+              Text('提交'),
             ],
           ),
           onTap: () {
