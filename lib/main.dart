@@ -40,14 +40,13 @@ class MyApp extends StatelessWidget {
       child: Consumer2<ThemeModel, UserModel>(
         builder: (BuildContext context, ThemeModel themeModel, UserModel userModel, Widget? child) {
           return MaterialApp(
-            // theme: ThemeData(
-            //   // primarySwatch: themeModel.theme
-            //   primaryColor: Colors.blue
-            // ),
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: ThemeModel().theme),
+            ),
             // onGenerateTitle: (context) {
             //   return "主页";
             // },
-            title: "My Github",
+            title: "GitVoar",
             home: userModel.isLogin ? const HomeRoute() : const LoginPage(),
             routes: <String, WidgetBuilder> {
               "login": (context) => const LoginPage(),

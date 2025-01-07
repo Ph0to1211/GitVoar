@@ -24,6 +24,8 @@ class _PersonalPageState extends State<PersonalPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color textColor = Theme.of(context).colorScheme.primary;
+
     return ListView(
       children: [
         Padding(
@@ -103,9 +105,9 @@ class _PersonalPageState extends State<PersonalPage> {
             ],
           ),
         ),
-        const Divider(color: Colors.grey, height: .0, thickness: .0),
-        const ListTile(
-          title: Text('我的工作', style: TextStyle(fontSize: 15))
+        // const Divider(color: Colors.grey, height: .0, thickness: .0),
+        ListTile(
+          title: Text('我的工作', style: TextStyle(fontSize: 15, color: textColor))
         ),
         ListTile(
           leading: const Icon(Icons.book_rounded, color: Colors.black),
@@ -147,7 +149,7 @@ class _PersonalPageState extends State<PersonalPage> {
         ),
         const Divider(color: Colors.grey, height: .0, thickness: .0),
         ListTile(
-          title: const Text('收藏夹', style: TextStyle(fontSize: 15)),
+          title: Text('收藏夹', style: TextStyle(fontSize: 15, color: textColor)),
           trailing: IconButton(
             icon: Icon(Icons.more_horiz_rounded, color: Colors.grey[600]),
             onPressed: () {},
@@ -174,8 +176,8 @@ class _PersonalPageState extends State<PersonalPage> {
           ],
         ),
         const Divider(color: Colors.grey, height: .0, thickness: .0),
-        const ListTile(
-            title: Text('其他', style: TextStyle(fontSize: 15))
+        ListTile(
+            title: Text('其他', style: TextStyle(fontSize: 15, color: textColor))
         ),
         ListTile(
           leading: const Icon(Icons.settings_rounded),
@@ -196,6 +198,8 @@ class _PersonalPageState extends State<PersonalPage> {
   }
 
   Widget buildSubItem() {
+    Color textColor = Theme.of(context).colorScheme.primary;
+
     return Material(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,7 +217,7 @@ class _PersonalPageState extends State<PersonalPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(user.followers!.toString(), style: TextStyle(fontSize: 14.0)),
+                Text(user.followers!.toString(), style: TextStyle(fontSize: 14.0, color: textColor)),
                 Row(
                   children: [
                     Icon(Icons.people_rounded, color: Colors.grey, size: 18.0),
@@ -236,7 +240,7 @@ class _PersonalPageState extends State<PersonalPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(user.following!.toString(), style: TextStyle(fontSize: 14.0)),
+                Text(user.following!.toString(), style: TextStyle(fontSize: 14.0, color: textColor)),
                 Row(
                   children: [
                     Icon(Icons.emoji_people_rounded, color: Colors.grey, size: 18.0),
@@ -249,7 +253,7 @@ class _PersonalPageState extends State<PersonalPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('0', style: TextStyle(fontSize: 14.0)),
+              Text('0', style: TextStyle(fontSize: 14.0, color: textColor)),
               Row(
                 children: [
                   Icon(Icons.star_rounded, color: Colors.grey, size: 18.0),

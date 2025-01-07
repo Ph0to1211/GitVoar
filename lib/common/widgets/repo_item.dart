@@ -17,6 +17,7 @@ class _RepoItemState extends State<RepoItem> {
   @override
   Widget build(BuildContext context) {
     var subtitle;
+
     return Material(
       child: InkWell(
         onTap: () async {
@@ -99,6 +100,8 @@ class _RepoItemState extends State<RepoItem> {
   }
 
   Widget _buildBottom() {
+    Color iconColor = Theme.of(context).colorScheme.secondary;
+
     const paddingWidth = 10;
     return IconTheme(
       data: const IconThemeData(
@@ -111,17 +114,17 @@ class _RepoItemState extends State<RepoItem> {
           builder: (context) {
             var children = <Widget>[
               Row(children: [
-                Icon(Icons.star_rounded, color: Colors.grey, size: 20.0),
+                Icon(Icons.star_rounded, color: iconColor, size: 20.0),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 3.0)),
                 Text(widget.repo.stargazersCount.toString())
               ],),
               Row(children: [
-                Icon(Icons.info_outline_rounded, size: 20.0),
+                Icon(Icons.info_outline_rounded, color: iconColor, size: 20.0),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 3.0)),
                 Text(widget.repo.openIssuesCount.toString())
               ],),
               Row(children: [
-                Icon(Icons.fork_right_rounded, color: Colors.grey, size: 20.0),
+                Icon(Icons.fork_right_rounded, color: iconColor, size: 20.0),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 3.0)),
                 Text(widget.repo.forksCount.toString())
               ],),
@@ -137,7 +140,7 @@ class _RepoItemState extends State<RepoItem> {
                   children.length - 1,
                   <Widget>[
                     Row(children: [
-                      Icon(Icons.lock_rounded, color: Colors.grey, size: 18.0),
+                      Icon(Icons.lock_rounded, color: iconColor, size: 18.0),
                       Padding(padding: EdgeInsets.symmetric(horizontal: 3.0)),
                       Text('私人')
                     ],)

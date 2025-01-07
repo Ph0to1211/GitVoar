@@ -98,6 +98,8 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
     var forkCount = widget.repo.forksCount!.toString();
     var issueCount = widget.repo.openIssuesCount!.toString();
 
+    Color iconColor = Theme.of(context).colorScheme.secondary;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -273,7 +275,7 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
                           },
                           borderRadius: BorderRadius.circular(15),
                           child: Row(children: [
-                            Icon(Icons.star_outline_rounded, size: 22.0),
+                            Icon(Icons.star_outline_rounded, size: 22.0, color: iconColor),
                             Text(
                               ' $starCount 个星标',
                               style: const TextStyle(fontSize: 12.0),
@@ -291,7 +293,7 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
                           },
                           borderRadius: BorderRadius.circular(15),
                           child: Row(children: [
-                            Icon(Icons.merge_rounded, size: 22.0),
+                            Icon(Icons.merge_rounded, size: 22.0, color: iconColor),
                             Text(
                               ' $forkCount 个复刻',
                               style: const TextStyle(fontSize: 12.0),
@@ -302,7 +304,7 @@ class _RepoDetailPageState extends State<RepoDetailPage> {
                           onTap: () {},
                           borderRadius: BorderRadius.circular(15),
                           child: Row(children: [
-                            Icon(Icons.bug_report_rounded, size: 22.0),
+                            Icon(Icons.bug_report_rounded, size: 22.0, color: iconColor),
                             Text(
                               ' $issueCount 个议题',
                               style: const TextStyle(fontSize: 12.0),

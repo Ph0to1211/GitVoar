@@ -10,12 +10,14 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
+    Color textColor = Theme.of(context).colorScheme.primary;
+
     return ListView(
       children: [
         ListTile(
           title: Text(
             '发现',
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15, color: textColor),
           ),
           trailing: IconButton(
             icon: Icon(Icons.more_horiz_rounded, color: Colors.grey[600]),
@@ -40,13 +42,33 @@ class _ExplorePageState extends State<ExplorePage> {
         ListTile(
           title: Text(
             '动态',
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15, color: textColor),
           ),
           trailing: IconButton(
             icon: Icon(Icons.more_horiz_rounded, color: Colors.grey[600]),
             onPressed: () {},
           ),
           onTap: null,
+        ),
+        Column(
+          children: [
+            const Text(
+              '查看您的仓库最新动态',
+              style: TextStyle(
+                  fontSize: 16.0
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                '往收藏夹添加些什么...',
+                style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey[600]
+                ),
+              ),
+            )
+          ],
         ),
       ],
     );

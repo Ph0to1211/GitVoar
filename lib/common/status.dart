@@ -45,7 +45,7 @@ class UserModel extends ProfileChangeNotifier {
 }
 
 class ThemeModel extends ProfileChangeNotifier {
-  // 获取当前主题，如果为设置主题，则默认使用蓝色主题
+  // 获取当前主题，如果未设置主题，则默认使用蓝色主题
   ColorSwatch get theme => Global.themes
       .firstWhere((e) => e.value == _profile.theme, orElse: () => Colors.blue);
 
