@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_github/pages/repo/repos.dart';
 import 'package:my_github/pages/repo/starred_repos.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/user.dart';
 import '../user/organizations.dart';
@@ -19,7 +21,46 @@ class _UserDetailPageState extends State<UserDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('用户'),
+        title: const Text('用户'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (String value) async {
+              if (value == 'Option 1') {
+                Share.share(widget.user.htmlUrl!);
+              } else if (value == 'Option 2') {
+                await launchUrl(
+                    Uri.parse(widget.user.htmlUrl!),
+                    mode: LaunchMode.externalApplication
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'Option 1',
+                  child: Row(
+                    children: [
+                      Icon(Icons.share_rounded),
+                      SizedBox(width: 10),
+                      Text('分享'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Option 2',
+                  child: Row(
+                    children: const [
+                      Icon(Icons.open_in_browser_rounded),
+                      SizedBox(width: 10),
+                      Text('在浏览器打开'),
+                    ],
+                  ),
+                ),
+              ];
+            },
+            icon: const Icon(Icons.more_vert_rounded),
+          )
+        ],
       ),
       body: ListView(
         children: [
@@ -34,8 +75,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
             thickness: .0,
           ),
           ListTile(
-            leading: Icon(Icons.book_rounded, color: Colors.black),
-            title: Text('仓库'),
+            leading: const Icon(Icons.book_rounded, color: Colors.black),
+            title: const Text('仓库'),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(
@@ -46,8 +87,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.people_rounded, color: Colors.orange),
-            title: Text('组织'),
+            leading: const Icon(Icons.people_rounded, color: Colors.orange),
+            title: const Text('组织'),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(
@@ -59,7 +100,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
           ),
           ListTile(
             leading: Icon(Icons.star_rounded, color: Colors.yellow),
-            title: Text('已加星标'),
+            title: const Text('已加星标'),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(
@@ -88,36 +129,42 @@ class _UserDetailPageState extends State<UserDetailPage> {
             ),
           ),
           const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-          Text(
-            widget.user.login!,
-            style: (widget.user.name != null) ?
-            const TextStyle(fontSize: 25.0) :
-            const TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+                widget.user.login!,
+                style: (widget.user.name != null) ?
+                const TextStyle(fontSize: 25.0) :
+                const TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)
+            ),
           )
         ];
         if (widget.user.name != null) {
-          items.insert(2, Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 9.0),
-                child: Text(
-                  '#',
-                  style: TextStyle(fontSize: 16.0, color: Colors.grey, fontStyle: FontStyle.italic,),
+          items.insert(2, FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 9.0),
+                  child: Text(
+                    '#',
+                    style: TextStyle(fontSize: 16.0, color: Colors.grey, fontStyle: FontStyle.italic,),
+                  ),
                 ),
-              ),
-              SizedBox(width: 6.0),
-              Text(
-                  widget.user.name!,
-                  style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)
-              ),
-              SizedBox(width: 16.0)
-            ],
+                const SizedBox(width: 6.0),
+                Text(
+                    widget.user.name!,
+                    style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold)
+                ),
+                const SizedBox(width: 16.0)
+              ],
+            ),
           ));
         }
         if (widget.user.bio != null) {
           items.add(Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 2.0),
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 2.0),
             child: Text(
                 widget.user.bio!,
                 textAlign: TextAlign.center,
@@ -125,16 +172,16 @@ class _UserDetailPageState extends State<UserDetailPage> {
             ),
           ));
         }
-        items.add(Padding(padding: EdgeInsets.symmetric(vertical: 2.0)));
+        items.add(const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)));
         if (widget.user.company != null) {
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.business_rounded, color: Colors.grey,),
-              SizedBox(width: 5.0),
+              const Icon(Icons.business_rounded, color: Colors.grey,),
+              const SizedBox(width: 5.0),
               Text(
                 widget.user.company!,
-                style: TextStyle(fontSize: 14.0),
+                style: const TextStyle(fontSize: 14.0),
               )
             ],
           ));
