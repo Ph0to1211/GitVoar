@@ -1,6 +1,7 @@
 # GitVoar
 
-GitVoar 是使用Flutter开发的第三方github，基于Github API，旨在新手学习flutter，还在不断开发中，欢迎star。<br>
+GitVoar 是使用Flutter开发的第三方github，基于Github API，旨在新手学习flutter，还在不断开发中，欢迎star。
+
 GitVoar is a third-party GitHub project developed with Flutter, aimed at helping beginners learn and explore mobile development. It is still under active development, and stars are welcome.
 
 ## 截图 Screenshot
@@ -20,7 +21,49 @@ GitVoar is a third-party GitHub project developed with Flutter, aimed at helping
 
 ## 开发计划 development plan
 
-...
+- [x] 登录功能
+  - [x] token登录（）
+  - [x] oauth登录
+- [x] 搜索功能
+  - [x] 搜索仓库
+  - [x] 搜索用户
+  - [ ] 搜索历史
+  - [ ] 筛选
+- [x] 仓库相关
+  - [x] 添加star
+  - [x] 查看star的用户
+  - [x] 查看复刻的仓库
+  - [x] 查看仓库文件
+  - [x] 查看代码
+  - [x] 查看commit
+  - [x] 查看release
+  - [ ] 查看issue
+  - [ ] 查看图片
+  - [ ] 切换branch
+  - [ ] ...
+- [x] 用户相关
+  - [x] 查看用户的仓库
+  - [x] 查看用户的组织
+  - [x] 查看用户的star
+  - [ ] 关注用户
+  - [ ] ...
+- [x] 发现相关
+  - [x] 热门仓库
+  - [ ] 推荐仓库
+  - [ ] 仓库动态
+- [x] 通知功能
+  - [ ] ...
+- [x] 设置相关
+  - [ ] 适配深色模式
+  - [ ] 主题颜色选择
+  - [ ] ...
+
+## 鸣谢
+
+- [《Flutter实战·第二版》](https://book.flutterchina.club/)
+- [GitHub REST API](https://docs.github.com/en/rest?apiVersion=2022-11-28)
+- [pilipala](https://github.com/guozhigq/pilipala)
+- [dio](https://pub.dev/packages/dio)
 
 ## 免责声明
 

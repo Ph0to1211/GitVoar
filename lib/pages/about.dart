@@ -25,7 +25,7 @@ class AboutPage extends StatelessWidget {
             ),
             Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
             Text(
-                'GitVoar 是使用Flutter开发的第三方github，旨在新手学习与探索移动开发，还在不断开发中，欢迎star',
+                'GitVoar 是使用Flutter开发的第三方github，基于Github API，旨在新手学习flutter，还在不断开发中，欢迎star。',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20.0)
             )
