@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_common/get_reset.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:my_github/pages/user/followers.dart';
 import 'package:my_github/pages/user/followings.dart';
 import 'package:my_github/pages/user/organizations.dart';
@@ -183,14 +186,16 @@ class _PersonalPageState extends State<PersonalPage> {
           leading: const Icon(Icons.settings_rounded),
           title: const Text('设置'),
           onTap: () {
-            Navigator.pushNamed(context, "Setting");
+            // Navigator.pushNamed(context, "Setting");
+            Get.toNamed('/setting');
           }
         ),
         ListTile(
           leading: const Icon(Icons.info_outline_rounded),
           title: const Text('关于'),
           onTap: () {
-            Navigator.pushNamed(context, "About");
+            // Navigator.pushNamed(context, "About");
+            Get.toNamed('/about');
           }
         ),
       ],
@@ -268,31 +273,28 @@ class _PersonalPageState extends State<PersonalPage> {
   }
 
   void _logout() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('提示'),
-          content: const Text('确认注销用户吗？'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('取消', style: TextStyle(color: Colors.grey)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                var userModel = Provider.of<UserModel>(context, listen: false);
-                userModel.setLoginStatus(false);
-              },
-              child: const Text('确认'),
-            )
-          ],
-        );
-      }
+    final UserController userController = Get.find<UserController>();
+
+    Get.dialog(
+      AlertDialog(
+        title: const Text('提示'),
+        content: const Text('确认注销用户吗？'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('取消', style: TextStyle(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              userController.logout();
+            },
+            child: const Text('确认'),
+          ),
+        ],
+      ),
     );
   }
-
 }

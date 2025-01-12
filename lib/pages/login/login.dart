@@ -1,178 +1,144 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:my_github/common/global.dart';
-import 'package:my_github/common/status.dart';
 import 'package:my_github/db/db_helper.dart';
 import 'package:my_github/db/db_models/db_user.dart';
 import 'package:my_github/http/git.dart';
 import 'package:my_github/models/user.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_github/pages/login/oauth.dart';
-import 'package:provider/provider.dart';
 
+import '../../common/status.dart';
 
-class LoginPage extends StatefulWidget{
-  const LoginPage({super.key});
+class LoginController extends GetxController {
+  final UserController userController = Get.find<UserController>();
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
+  var usernameCont = TextEditingController();
+  var pwdCont = TextEditingController();
+  var formKey = GlobalKey<FormState>();
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameCont = TextEditingController();
-  final TextEditingController _pwdCont = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  List<DbUser> _users = [];
-
-  bool showPwd = false;
-  bool _nameAutoFocus = true;
-  bool _isChecked = false;
+  var users = <DbUser>[].obs;
+  var showPwd = false.obs;
+  var nameAutoFocus = true.obs;
+  var isChecked = false.obs;
 
   @override
-  void initState() {
-    super.initState();
+  void onInit() {
+    super.onInit();
     _initialize();
     if (Global.profile.lastLogin != null) {
-      setState(() {
-        _nameAutoFocus = false;
-      });
+      nameAutoFocus.value = false;
     }
   }
 
-  void _initialize() async {
+  Future<void> _initialize() async {
     await _getUsers();
-
-    if (_users.isNotEmpty) {
-      var matchingUser = _users.firstWhere(
-              (user) => user.login == Global.profile.lastLogin,
-          orElse: () => DbUser(login: '', rememberPwd: 0)
+    if (users.isNotEmpty) {
+      var matchingUser = users.firstWhere(
+            (user) => user.login == Global.profile.lastLogin,
+        orElse: () => DbUser(login: '', rememberPwd: 0),
       );
-
       if (matchingUser.login != '') {
-        _usernameCont.text = matchingUser.login;
-        _pwdCont.text = matchingUser.token!;
-
-        setState(() {
-          _isChecked = (matchingUser.rememberPwd == 1) ? true : false;
-        });
+        usernameCont.text = matchingUser.login;
+        pwdCont.text = matchingUser.token ?? '';
+        isChecked.value = matchingUser.rememberPwd == 1;
       }
     }
   }
 
   Future<void> _getUsers() async {
-    var users = await DBHelper.getUsers();
-    setState(() {
-      _users = users;
-    });
+    var fetchedUsers = await DBHelper.getUsers();
+    users.assignAll(fetchedUsers);
   }
 
-  void _newUser(
-      String login, String? token, String? avatarUrl, int rememberPwd) async {
-    DbUser user = DbUser(
-        login: login,
-        token: token,
-        avatarUrl: avatarUrl,
-        rememberPwd: rememberPwd);
-    await DBHelper.insertUser(user);
-    _getUsers();
-  }
-
-  void _updateUser(
-      String login, String? token, String? avatarUrl, int rememberPwd) async {
+  void insertOrUpdateUser(String login, String? token, String? avatarUrl) async {
+    bool exists = users.any((u) => u.login == login);
     DbUser user = DbUser(
       login: login,
-      token: token,
+      token: isChecked.value ? token : '',
       avatarUrl: avatarUrl,
-      rememberPwd: rememberPwd,
+      rememberPwd: isChecked.value ? 1 : 0,
     );
-    await DBHelper.updateUser(user);
+    exists ? await DBHelper.updateUser(user) : await DBHelper.insertUser(user);
     _getUsers();
   }
 
-  void _insertUser(String userName, String? token, String? avatarUrl) {
-    bool exists = _users.any((u) => u.login == userName);
-    if (exists) {
-      (_isChecked)
-          ? _updateUser(userName, token, avatarUrl, 1)
-          : _updateUser(userName, '', avatarUrl, 0);
-    } else {
-      (_isChecked)
-          ? _newUser(userName, token, avatarUrl, 1)
-          : _newUser(userName, '', avatarUrl, 0);
+  Future<void> login() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        User? user = await Git(Get.context!)
+            .login(usernameCont.text, pwdCont.text);
+
+        if (user.login == usernameCont.text) {
+          insertOrUpdateUser(usernameCont.text, pwdCont.text, user.avatarUrl);
+          userController.login(user);
+          Fluttertoast.showToast(msg: "登录成功");
+          // Get.back();
+        } else {
+          Fluttertoast.showToast(msg: "用户名/密码错误");
+        }
+      } on DioException catch (e) {
+        Fluttertoast.showToast(msg: "网络错误: ${e.message}");
+      }
     }
   }
+}
+
+class LoginPage extends StatelessWidget {
+  final LoginController controller = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("登录"),),
+      appBar: AppBar(title: const Text("登录")),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 15.0),
         child: Form(
-          key: _formKey,
+          key: controller.formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: <Widget>[
-              // CircleAvatar(
-              //   radius: 60.0,
-              //   backgroundImage: AssetImage(
-              //     'assets/img/Octocat.png'
-              //   ),
-              // ),
-              Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
-              TextFormField(
-                controller: _usernameCont,
-                autofocus: _nameAutoFocus,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "用户名",
-                    // hintText: "用户名",
-                    prefixIcon: Icon(Icons.person)
-                ),
-                validator: (v) {
-                  return v==null||v.trim().isNotEmpty ? null : "请输入用户名";
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-              ),
-              TextFormField(
-                controller: _pwdCont,
-                autofocus: !_nameAutoFocus,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: "密码",
-                    // hintText: "密码",
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                          showPwd ? Icons.visibility_off : Icons.visibility
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          showPwd = !showPwd;
-                        });
-                      },
-                    )
-                ),
-                obscureText: !showPwd,
-                validator: (v) {
-                  return v==null||v.trim().isNotEmpty ? null : "请输入密码";
-                },
-              ),
+              Obx(() => TextFormField(
+                  controller: controller.usernameCont,
+                  autofocus: controller.nameAutoFocus.value,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "用户名",
+                      prefixIcon: Icon(Icons.person)),
+                  validator: (v) {
+                    return v==null||v.trim().isNotEmpty ? null : "请输入用户名";
+                  }
+              )),
+              const SizedBox(height: 16),
+              Obx(() => TextFormField(
+                  controller: controller.pwdCont,
+                  obscureText: !controller.showPwd.value,
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: "密码",
+                      prefixIcon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(controller.showPwd.value
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () {
+                          controller.showPwd.toggle();
+                        },
+                      )),
+                  validator: (v) {
+                    return v==null||v.trim().isNotEmpty ? null : "请输入密码";
+                  }
+              )),
               Row(
                 children: [
-                  Checkbox(
-                    value: _isChecked,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _isChecked = value!;
-                      });
+                  Obx(() => Checkbox(
+                    value: controller.isChecked.value,
+                    onChanged: (value) {
+                      controller.isChecked.value = value!;
                     },
-                  ),
-                  Text('记住密码')
+                  )),
+                  const Text('记住密码')
                 ],
               ),
               Row(
@@ -183,10 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                         fixedSize: const Size(135, 45)
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => OauthLoginPage()),
-                      );
+                      Get.to(() => OauthLoginPage());
                     },
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -202,11 +165,11 @@ class _LoginPageState extends State<LoginPage> {
                     style: FilledButton.styleFrom(
                         fixedSize: const Size(135, 45)
                     ),
-                    onPressed: _onLogin,
+                    onPressed: controller.login,
                     child: const Text("登录"),
                   )
                 ],
-              ),
+              )
             ],
           ),
         ),
@@ -217,59 +180,5 @@ class _LoginPageState extends State<LoginPage> {
         icon: const Icon(Icons.person_add_rounded),
       ),
     );
-  }
-
-  void _onLogin() async {
-    var userModel = Provider.of<UserModel>(context, listen: false);
-    bool isLogin = userModel.isLogin;
-
-    if (_formKey.currentState!.validate()) {
-      User? user;
-      try {
-        user = await Git(context)
-            .login(_usernameCont.text, _pwdCont.text, context);
-      } on DioException catch(e) {
-        Response<dynamic>? r = e.response;
-        if (r?.statusCode == 401) {
-          print("用户名/密码错误");
-          Fluttertoast.showToast(
-            msg: "用户名/密码错误",
-            gravity: ToastGravity.BOTTOM,
-          );
-        } else {
-          Fluttertoast.showToast(
-            msg: e.toString(),
-            gravity: ToastGravity.BOTTOM,
-          );
-        }
-      } finally {
-        if (user != null && user.login == _usernameCont.text) {
-          print("登录成功");
-          _insertUser(_usernameCont.text, _pwdCont.text, user.avatarUrl);
-          Global.profile.user = user;
-          userModel.lastLogin = user.login!;
-          userModel.user = user;
-          Fluttertoast.showToast(
-            msg: "登录成功",
-            gravity: ToastGravity.BOTTOM,
-          );
-          if (isLogin) {
-            Navigator.pop(context);
-          }
-        } else {
-          print("用户名/密码错误");
-          Fluttertoast.showToast(
-            msg: "用户名/密码错误",
-            gravity: ToastGravity.BOTTOM,
-          );
-        }
-      }
-    } else {
-      print("请正确输入用户名/密码");
-      Fluttertoast.showToast(
-        msg: "请正确输入用户名/密码",
-        gravity: ToastGravity.BOTTOM,
-      );
-    }
   }
 }

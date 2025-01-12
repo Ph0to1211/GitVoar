@@ -38,7 +38,7 @@ class Git {
   }
 
 
-  Future<User> login(String login, String pwd, BuildContext context) async {
+  Future<User> login(String login, String pwd) async {
     var token = 'Bearer $pwd';
     var response = await dio.get(
       '/user',
@@ -67,7 +67,7 @@ class Git {
     return user;
   }
 
-  Future<User> oauthLogin(String code, BuildContext context) async {
+  Future<User> oauthLogin(String code) async {
     final dioOauth = Dio();
 
     var data = {
@@ -84,7 +84,7 @@ class Git {
     );
     var token = responseOauth.data!['access_token'];
 
-    var user = login('oauthUser', token, context);
+    var user = login('oauthUser', token);
     return user;
   }
 

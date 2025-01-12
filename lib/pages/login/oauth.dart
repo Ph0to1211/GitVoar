@@ -1,44 +1,33 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:my_github/models/user.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../common/status.dart';
 import '../../http/git.dart';
+import '../../models/user.dart';
 
-class OauthLoginPage extends StatefulWidget {
-  OauthLoginPage({super.key});
+class OauthController extends GetxController {
+  final UserController userController = Get.find<UserController>();
+
+  final progress = 0.0.obs;
+
+  late WebViewController controller;
+  final oauthLink = 'https://github.com/login/oauth/authorize?client_id=Ov23li095SyVH3RL5xo1';
+  String code = '';
 
   @override
-  _OauthLoginPageState createState() => _OauthLoginPageState();
-}
-
-class _OauthLoginPageState extends State<OauthLoginPage> {
-  late WebViewController _controller;
-  double _progress = 0;
-
-  final _oauthLink = 'https://github.com/login/oauth/authorize?client_id=Ov23li095SyVH3RL5xo1';
-  // final _oauthLink = 'https://www.baidu.com';
-  String _code = '';
-
-  void initState() {
-    _controller = WebViewController()
+  void onInit() {
+    controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
-        onProgress: (int progress) {
-          setState(() {
-            _progress = progress / 100.0;
-          });
+        onProgress: (int prg) {
+          progress.value = prg / 100.0;
         },
         onNavigationRequest: (request) {
           final Uri uri = Uri.parse(request.url);
           if (uri.queryParameters.containsKey('code')) {
-            setState(() {
-              _code = uri.queryParameters['code']!;
-            });
+            code = uri.queryParameters['code']!;
             login();
             return NavigationDecision.prevent;
           }
@@ -47,9 +36,25 @@ class _OauthLoginPageState extends State<OauthLoginPage> {
         },
       ))
       ..setBackgroundColor(Colors.white)
-      ..loadRequest(Uri.parse(_oauthLink));
-    super.initState();
+      ..loadRequest(Uri.parse(oauthLink));
+    super.onInit();
   }
+
+  void login() async {
+    User user = await Git(Get.context!).oauthLogin(code);
+    userController.login(user);
+    // await _controller.clearCache();
+    // await _controller.clearLocalStorage();
+    Fluttertoast.showToast(
+      msg: "登录成功~",
+      gravity: ToastGravity.BOTTOM,
+    );
+    Get.back();
+  }
+}
+
+class OauthLoginPage extends StatelessWidget {
+  final OauthController oauthController = Get.put(OauthController());
 
   @override
   Widget build(BuildContext context) {
@@ -63,33 +68,21 @@ class _OauthLoginPageState extends State<OauthLoginPage> {
         ),
         actions: [
           IconButton(
-            onPressed: _controller.reload,
+            onPressed: oauthController.controller.reload,
             icon: Icon(Icons.refresh_rounded),
           )
         ],
       ),
-      body: Column(
+      body: Obx(() => Column(
         children: [
-          _progress < 1.0 ? LinearProgressIndicator(value: _progress) : Container(),
+          oauthController.progress.value < 1.0 ? LinearProgressIndicator(value: oauthController.progress.value) : Container(),
           Expanded(
             child: WebViewWidget(
-              controller: _controller,
+              controller: oauthController.controller,
             ),
           )
         ],
-      ),
+      )),
     );
   }
-
-  void login() async {
-    await Git(context).oauthLogin(_code, context);
-    // await _controller.clearCache();
-    // await _controller.clearLocalStorage();
-    Fluttertoast.showToast(
-      msg: "登录成功~",
-      gravity: ToastGravity.BOTTOM,
-    );
-    Navigator.of(context).pop();
-  }
-
 }
