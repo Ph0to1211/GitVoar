@@ -25,7 +25,7 @@ class Profile {
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
-    user: User.fromJson(json["user"]),
+    user: json["user"] != null ? User.fromJson(json["user"]) : null,
     token: json["token"],
     theme: json["theme"],
     cache: CacheConfig.fromJson(json["cache"]),
