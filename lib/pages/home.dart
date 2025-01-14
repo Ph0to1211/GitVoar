@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:my_github/common/global.dart';
 import 'package:my_github/pages/login/login.dart';
 import 'package:my_github/pages/notification.dart';
 import 'package:my_github/pages/personal.dart';
-import 'package:my_github/pages/search.dart';
-import 'package:my_github/pages/work.dart';
 import 'package:my_github/pages/explore.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -86,7 +84,7 @@ class _HomeRouteState extends State<HomeRoute> {
         IconButton(
           icon: const Icon(Icons.search_rounded),
           onPressed: () {
-            Navigator.pushNamed(context, 'Search');
+            Get.toNamed('/search');
           },
         ),
       ];
@@ -96,7 +94,7 @@ class _HomeRouteState extends State<HomeRoute> {
         IconButton(
           icon: const Icon(Icons.compare_arrows_rounded),
           onPressed: () {
-            Navigator.pushNamed(context, "login");
+            Get.toNamed('/login');
           },
         ),
         PopupMenuButton<String>(

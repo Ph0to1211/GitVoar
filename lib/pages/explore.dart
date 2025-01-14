@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ExplorePage extends StatefulWidget {
   ExplorePage({super.key});
@@ -29,7 +30,7 @@ class _ExplorePageState extends State<ExplorePage> {
           leading: Icon(Icons.local_fire_department_rounded, color: Colors.red),
           title: Text('热门仓库'),
           onTap: () {
-            Navigator.pushNamed(context, "HotRepos");
+            Get.toNamed('/hotrepos');
           },
         ),
         ListTile(

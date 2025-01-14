@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_common/get_reset.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:my_github/pages/user/followers.dart';
 import 'package:my_github/pages/user/followings.dart';
 import 'package:my_github/pages/user/organizations.dart';
 import 'package:my_github/pages/repo/repos.dart';
 import 'package:my_github/pages/repo/starred_repos.dart';
 import 'package:my_github/pages/detail/user_datail.dart';
-import 'package:provider/provider.dart';
 
 import '../common/global.dart';
 import '../common/status.dart';
@@ -186,7 +183,6 @@ class _PersonalPageState extends State<PersonalPage> {
           leading: const Icon(Icons.settings_rounded),
           title: const Text('设置'),
           onTap: () {
-            // Navigator.pushNamed(context, "Setting");
             Get.toNamed('/setting');
           }
         ),
@@ -194,7 +190,6 @@ class _PersonalPageState extends State<PersonalPage> {
           leading: const Icon(Icons.info_outline_rounded),
           title: const Text('关于'),
           onTap: () {
-            // Navigator.pushNamed(context, "About");
             Get.toNamed('/about');
           }
         ),
